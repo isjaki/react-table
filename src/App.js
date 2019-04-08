@@ -2,13 +2,15 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import './App.css';
 
-import TableRows from './components/TableRows/TableRows';
+import Table from './components/Table/Table';
+import DataLoader from './components/DataLoader/DataLoader';
 import Pagination from './components/UI/Pagination/Pagination';
 import Spinner from './components/UI/Spinner/Spinner';
 
 class App extends Component {
   state = {
-    data: null,
+    receivedData: null,
+    splittedData: null,
     dataSize: 'small',
     pageToRender: 0,
     loading: false
@@ -51,7 +53,8 @@ class App extends Component {
       }
 
       this.setState({
-        data: splittedData,
+        receivedData: receivedData,
+        splittedData: splittedData,
         loading: false
       });
     });
@@ -60,8 +63,8 @@ class App extends Component {
   toNextPageHandler = () => {
     let newPage = this.state.pageToRender + 1;
 
-    if (newPage >= this.state.data.length) {
-      newPage = this.state.data.length - 1;
+    if (newPage >= this.state.splittedData.length) {
+      newPage = this.state.splittedData.length - 1;
     }
 
     this.setState({
@@ -82,45 +85,27 @@ class App extends Component {
   }
 
   render() {
-    let tableRows = null;
+    let table = null;
+    let pagination = null;
 
-    if (this.state.data && !this.state.loading) {
-      tableRows = <TableRows
-        tableData={this.state.data[this.state.pageToRender]} />;
+    if (this.state.splittedData && !this.state.loading) {
+      table = <Table data={this.state.splittedData[this.state.pageToRender]} />;
+
+      pagination = <Pagination
+        currentPage={this.state.pageToRender + 1}
+        numberOfPages={this.state.splittedData.length}
+        toNextPageHandler={this.toNextPageHandler}
+        toPreviousPageHandler={this.toPreviousPageHandler} />
     }
 
     return (
       <div className="App">
-        <div className="Form">
-          Выберете набор данных:
-          <select onChange={this.selectDataSizeHandler} name="options">
-            <option value="small">Маленький</option>
-            <option value="large">Большой</option>
-          </select>
-          <button onClick={this.getDataHandler}>Загрузить данные</button>
-        </div>
-        <table>
-          <thead>
-             <tr>
-                <th>id</th>
-                <th>first name</th>
-                <th>last name</th>
-                <th>email</th>
-                <th>phone</th>
-            </tr>
-          </thead>
-          {tableRows}
-        </table>
+        <DataLoader
+          selectDataSizeHandler={this.selectDataSizeHandler}
+          getDataHandler={this.getDataHandler} />
+        {table}
         {this.state.loading ? <Spinner /> : null}
-        {
-          this.state.data ? 
-          <Pagination
-            currentPage={this.state.pageToRender + 1}
-            numberOfPages={this.state.data.length}
-            toNextPageHandler={this.toNextPageHandler}
-            toPreviousPageHandler={this.toPreviousPageHandler} />
-           : null
-        }
+        {pagination}
       </div>
     );
   }

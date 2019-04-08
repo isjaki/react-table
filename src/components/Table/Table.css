@@ -1,0 +1,10 @@
+.Table {
+    border-collapse: collapse;
+    border: 1px solid;
+    margin: 20px;
+}
+  
+.Table th, td {
+    border: 1px solid;
+    padding: 5px 10px;
+}
