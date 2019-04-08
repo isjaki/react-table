@@ -5,6 +5,7 @@ import TableRow from './TableRow/TableRow';
 const tableRows = props => {
     const tableRowsArray = props.tableData.map((tableRow, index) => {
         return <TableRow
+            key={tableRow.email}
             id={tableRow.id}
             firstName={tableRow.firstName}
             lastName={tableRow.lastName}

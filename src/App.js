@@ -43,7 +43,8 @@ class App extends Component {
     }
 
     this.setState({
-      loading: true
+      loading: true,
+      pageToRender: 0
     });
 
     axios.get(dataLink).then(response => {
@@ -58,6 +59,7 @@ class App extends Component {
       this.setState({
         receivedData: receivedData,
         splittedData: splittedData,
+        infoToDisplay: null,
         loading: false
       });
     });
