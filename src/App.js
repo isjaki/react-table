@@ -2,10 +2,15 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import './App.css';
 
+import TableRows from './components/TableRows/TableRows';
+import Pagination from './components/UI/Pagination';
+import Spinner from './components/UI/Spinner/Spinner';
+
 class App extends Component {
   state = {
     data: null,
     dataSize: 'small',
+    pageToRender: 0,
     loading: false
   }
 
@@ -32,6 +37,10 @@ class App extends Component {
         '&phone={phone|(xxx)xxx-xx-xx}&address={addressObject}&description={lorem|32}';
     }
 
+    this.setState({
+      loading: true
+    });
+
     axios.get(dataLink).then(response => {
       const receivedData = response.data;
       const splittedData = [];
@@ -42,7 +51,8 @@ class App extends Component {
       }
 
       this.setState({
-        data: splittedData
+        data: splittedData,
+        loading: false
       });
     });
   }
@@ -68,8 +78,15 @@ class App extends Component {
                 <th>phone</th>
             </tr>
           </thead>
-          <tbody></tbody>
+          {
+            this.state.data ? 
+            <TableRows
+              tableData={this.state.data[this.state.pageToRender]} /> 
+            : null
+          }
         </table>
+        {this.state.loading ? <Spinner /> : null}
+        {this.state.data ? <Pagination /> : null}
       </div>
     );
   }
