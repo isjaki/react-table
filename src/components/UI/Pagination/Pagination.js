@@ -3,9 +3,13 @@ import React from 'react';
 const pagination = props => {
     return (
         <div>
-            <button>Previous</button>
+            <button
+                onClick={props.toPreviousPageHandler}
+            >Previous</button>
             <span>{props.currentPage} from {props.numberOfPages}</span>
-            <button>Next</button>
+            <button
+                onClick={props.toNextPageHandler}
+            >Next</button>
         </div>
     );
 }

@@ -3,7 +3,7 @@ import axios from 'axios';
 import './App.css';
 
 import TableRows from './components/TableRows/TableRows';
-import Pagination from './components/UI/Pagination';
+import Pagination from './components/UI/Pagination/Pagination';
 import Spinner from './components/UI/Spinner/Spinner';
 
 class App extends Component {
@@ -44,7 +44,7 @@ class App extends Component {
     axios.get(dataLink).then(response => {
       const receivedData = response.data;
       const splittedData = [];
-      const chunk = 30;
+      const chunk = 20;
 
       for (let i = 0, j = receivedData.length; i < j; i+=chunk) {
         splittedData.push(receivedData.slice(i, i + chunk));
@@ -57,7 +57,38 @@ class App extends Component {
     });
   }
 
+  toNextPageHandler = () => {
+    let newPage = this.state.pageToRender + 1;
+
+    if (newPage >= this.state.data.length) {
+      newPage = this.state.data.length - 1;
+    }
+
+    this.setState({
+      pageToRender: newPage
+    });
+  }
+
+  toPreviousPageHandler = () => {
+    let newPage = this.state.pageToRender - 1;
+
+    if (newPage < 0) {
+      newPage = 0;
+    }
+
+    this.setState({
+      pageToRender: newPage
+    });
+  }
+
   render() {
+    let tableRows = null;
+
+    if (this.state.data && !this.state.loading) {
+      tableRows = <TableRows
+        tableData={this.state.data[this.state.pageToRender]} />;
+    }
+
     return (
       <div className="App">
         <div className="Form">
@@ -78,15 +109,18 @@ class App extends Component {
                 <th>phone</th>
             </tr>
           </thead>
-          {
-            this.state.data ? 
-            <TableRows
-              tableData={this.state.data[this.state.pageToRender]} /> 
-            : null
-          }
+          {tableRows}
         </table>
         {this.state.loading ? <Spinner /> : null}
-        {this.state.data ? <Pagination /> : null}
+        {
+          this.state.data ? 
+          <Pagination
+            currentPage={this.state.pageToRender + 1}
+            numberOfPages={this.state.data.length}
+            toNextPageHandler={this.toNextPageHandler}
+            toPreviousPageHandler={this.toPreviousPageHandler} />
+           : null
+        }
       </div>
     );
   }
