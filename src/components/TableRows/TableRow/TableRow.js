@@ -1,7 +1,7 @@
 import React from 'react';
 
 const tableRow = props => (
-        <tr>
+        <tr onClick={props.showInfoHandler}>
             <td>{props.id}</td>
             <td>{props.firstName}</td>
             <td>{props.lastName}</td>

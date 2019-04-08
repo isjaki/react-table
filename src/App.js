@@ -4,6 +4,7 @@ import './App.css';
 
 import Table from './components/Table/Table';
 import DataLoader from './components/DataLoader/DataLoader';
+import InfoBlock from './components/InfoBlock/InfoBlock';
 import Pagination from './components/UI/Pagination/Pagination';
 import Spinner from './components/UI/Spinner/Spinner';
 
@@ -13,6 +14,7 @@ class App extends Component {
     splittedData: null,
     dataSize: 'small',
     pageToRender: 0,
+    infoToDisplay: null,
     loading: false
   }
 
@@ -36,7 +38,8 @@ class App extends Component {
       dataLink = 'http://www.filltext.com/' + 
         '?rows=1000&id={number|1000}&firstName={firstName}' + 
         '&delay=3&lastName={lastName}&email={email}' + 
-        '&phone={phone|(xxx)xxx-xx-xx}&address={addressObject}&description={lorem|32}';
+        '&phone={phone|(xxx)xxx-xx-xx}&address={addressObject}' + 
+        '&description={lorem|32}';
     }
 
     this.setState({
@@ -84,12 +87,24 @@ class App extends Component {
     });
   }
 
+  showInfoHandler = (tableRowIndex) => {
+    const pageWithData = this.state.splittedData[this.state.pageToRender];
+    const tableRowClicked = pageWithData[tableRowIndex];
+
+    this.setState({
+      infoToDisplay: tableRowClicked
+    });
+  }
+
   render() {
     let table = null;
     let pagination = null;
+    let infoBlock = null;
 
     if (this.state.splittedData && !this.state.loading) {
-      table = <Table data={this.state.splittedData[this.state.pageToRender]} />;
+      table = <Table 
+        data={this.state.splittedData[this.state.pageToRender]}
+        showInfoHandler={this.showInfoHandler} />;
 
       pagination = <Pagination
         currentPage={this.state.pageToRender + 1}
@@ -98,14 +113,21 @@ class App extends Component {
         toPreviousPageHandler={this.toPreviousPageHandler} />
     }
 
+    if (this.state.infoToDisplay && !this.state.loading) {
+      infoBlock = <InfoBlock
+        address={this.state.infoToDisplay.address}
+        description={this.state.infoToDisplay.description} />
+    }
+
     return (
       <div className="App">
         <DataLoader
           selectDataSizeHandler={this.selectDataSizeHandler}
           getDataHandler={this.getDataHandler} />
-        {table}
-        {this.state.loading ? <Spinner /> : null}
         {pagination}
+        {table}
+        {infoBlock}
+        {this.state.loading ? <Spinner /> : null}
       </div>
     );
   }

@@ -16,6 +16,7 @@ const table = props => (
         </thead>
         <TableRows
             tableData={props.data}
+            showInfoHandler={props.showInfoHandler}
         />
     </table>
 );

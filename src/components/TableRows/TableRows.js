@@ -9,7 +9,8 @@ const tableRows = props => {
             firstName={tableRow.firstName}
             lastName={tableRow.lastName}
             email={tableRow.email} 
-            phone={tableRow.phone} />;
+            phone={tableRow.phone}
+            showInfoHandler={props.showInfoHandler.bind(this, index)} />;
     });
 
     return (
