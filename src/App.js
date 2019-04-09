@@ -6,6 +6,7 @@ import Table from './components/Table/Table';
 import DataLoader from './components/DataLoader/DataLoader';
 import InfoBlock from './components/InfoBlock/InfoBlock';
 import AddRow from './components/AddRow/AddRow';
+import Filter from './components/Filter/Filter';
 import Pagination from './components/UI/Pagination/Pagination';
 import Spinner from './components/UI/Spinner/Spinner';
 
@@ -149,11 +150,20 @@ class App extends Component {
     });
   }
 
+  dataToSearchHandler = (event) => {
+
+  }
+
+  findDataHandler = () => {
+    
+  }
+
   render() {
     let table = null;
     let pagination = null;
     let infoBlock = null;
     let addRow = null;
+    let filter = null;
 
     if (this.state.splittedData && !this.state.loading) {
       table = <Table 
@@ -172,6 +182,10 @@ class App extends Component {
         addRowHandler={this.addRowHandler}
         showAddRowForm={this.state.showAddRowForm}
         newRowData={this.state.newRowData} />;
+
+      filter = <Filter
+        dataToSearch={this.dataToSearchHandler}
+        findDataHandler={this.findDataHandler} />
     }
 
     if (this.state.infoToDisplay && !this.state.loading) {
@@ -184,6 +198,7 @@ class App extends Component {
         <DataLoader
           selectDataSizeHandler={this.selectDataSizeHandler}
           getDataHandler={this.getDataHandler} />
+        {filter}
         {addRow}
         {pagination}
         {table}
