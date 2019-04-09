@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import splitData from './helpers/splitData';
+import sortColumn from './helpers/sortColumn';
 import './App.css';
 
 import Table from './components/Table/Table';
@@ -15,12 +16,13 @@ class App extends Component {
   state = {
     receivedData: null,
     splittedData: null,
-    dataSize: 'small',
-    pageToRender: 0,
     infoToDisplay: null,
+    pageToRender: 0,
+    dataSize: 'small',
     dataToSearch: '',
     columnToSearch: 'id',
     loading: false,
+    hasError: false,
     showAddRowForm: false,
     newRowData: {
       id: '',
@@ -28,7 +30,8 @@ class App extends Component {
       lastName: '',
       email: '',
       phone: ''
-    }
+    },
+    sortingOrder: 'asc'
   }
 
   selectDataSizeHandler = (event) => {
@@ -60,17 +63,26 @@ class App extends Component {
       pageToRender: 0
     });
 
-    axios.get(dataLink).then(response => {
-      const receivedData = response.data;
-      const splittedData = splitData(receivedData, 20);
+    axios.get(dataLink)
+      .then(response => {
+        const receivedData = response.data;
+        const splittedData = splitData(receivedData, 20);
 
-      this.setState({
-        receivedData: receivedData,
-        splittedData: splittedData,
-        infoToDisplay: null,
-        loading: false
+        this.setState({
+          receivedData: receivedData,
+          splittedData: splittedData,
+          infoToDisplay: null
+        });
+      })
+      .catch(error => {
+        this.setState({
+          hasError: true
+        });
+        console.log(error);
+      })
+      .finally(() => {
+        this.setState({ loading: false });
       });
-    });
   }
 
   toNextPageHandler = () => {
@@ -189,17 +201,47 @@ class App extends Component {
     });
   }
 
+  sortColumnHandler = (columnType) => {
+    let dataToSort = this.state.receivedData;
+    let sortingOrder = this.state.sortingOrder;
+
+    if (columnType === 'id') {
+      dataToSort = sortColumn(dataToSort, 'id', 'number', sortingOrder);
+    } else {
+      dataToSort = sortColumn(dataToSort, columnType, 'string', sortingOrder);
+    }
+
+    if (sortingOrder === 'asc') {
+      sortingOrder = 'desc';
+    } else {
+      sortingOrder = 'asc';
+    }
+
+    const updatedSplittedData = splitData(dataToSort, 20);
+
+    this.setState({
+      splittedData: updatedSplittedData,
+      sortingOrder: sortingOrder
+    });
+  }
+
   render() {
     let table = null;
     let pagination = null;
     let infoBlock = null;
     let addRow = null;
     let filter = null;
+    let error = null;
+
+    if (this.state.hasError) {
+      error = <p>Что-то пошло не так...</p>;
+    }
 
     if (this.state.splittedData && !this.state.loading) {
       table = <Table 
         data={this.state.splittedData[this.state.pageToRender]}
-        showInfoHandler={this.showInfoHandler} />;
+        showInfoHandler={this.showInfoHandler}
+        sortColumnHandler={this.sortColumnHandler} />;
 
       pagination = <Pagination
         currentPage={this.state.pageToRender + 1}
@@ -230,6 +272,7 @@ class App extends Component {
         <DataLoader
           selectDataSizeHandler={this.selectDataSizeHandler}
           getDataHandler={this.getDataHandler} />
+        {error}
         {filter}
         {addRow}
         {pagination}

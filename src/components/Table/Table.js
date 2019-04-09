@@ -9,11 +9,21 @@ const table = props => {
         <table className="Table">
             <thead>
                 <tr>
-                    <th>id</th>
-                    <th>first name</th>
-                    <th>last name</th>
-                    <th>email</th>
-                    <th>phone</th>
+                    <th
+                        onClick={props.sortColumnHandler.bind(this, 'id')}
+                    >id</th>
+                    <th
+                        onClick={props.sortColumnHandler.bind(this, 'firstName')}
+                    >first name</th>
+                    <th
+                        onClick={props.sortColumnHandler.bind(this, 'lastName')}
+                    >last name</th>
+                    <th
+                        onClick={props.sortColumnHandler.bind(this, 'email')}
+                    >email</th>
+                    <th
+                        onClick={props.sortColumnHandler.bind(this, 'phone')}
+                    >phone</th>
                 </tr>
             </thead>
             <TableRows
