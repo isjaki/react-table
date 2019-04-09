@@ -17,6 +17,7 @@ class App extends Component {
     receivedData: null,
     splittedData: null,
     infoToDisplay: null,
+    dataToSort: null,
     pageToRender: 0,
     dataSize: 'small',
     dataToSearch: '',
@@ -198,13 +199,18 @@ class App extends Component {
 
     this.setState({
       splittedData: updatedSplittedData,
-      pageToRender: 0
+      pageToRender: 0,
+      dataToSort: filteredData
     });
   }
 
   sortColumnHandler = (columnType) => {
     let dataToSort = this.state.receivedData;
     let sortingOrder = this.state.sortingOrder;
+
+    if (this.state.dataToSort) {
+      dataToSort = this.state.dataToSort;
+    }
 
     if (columnType === 'id') {
       dataToSort = sortColumn(dataToSort, 'id', 'number', sortingOrder);

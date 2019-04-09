@@ -15,6 +15,10 @@ tr:nth-child(2n) {
     background-color: #dee2e8;
 }
 
+tr:hover {
+    box-shadow: inset 0 0 5px #afb0b3;
+}
+
 th {
     background-color: #293bb3;
     color: #ffffff;
