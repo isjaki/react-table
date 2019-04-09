@@ -72,6 +72,7 @@ class App extends Component {
         this.setState({
           receivedData: receivedData,
           splittedData: splittedData,
+          dataToSort: receivedData,
           infoToDisplay: null
         });
       })
