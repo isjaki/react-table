@@ -176,8 +176,7 @@ class App extends Component {
 
     if (this.state.infoToDisplay && !this.state.loading) {
       infoBlock = <InfoBlock
-        address={this.state.infoToDisplay.address}
-        description={this.state.infoToDisplay.description} />
+        infoToDisplay={this.state.infoToDisplay} />
     }
 
     return (
