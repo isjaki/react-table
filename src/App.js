@@ -17,6 +17,8 @@ class App extends Component {
     dataSize: 'small',
     pageToRender: 0,
     infoToDisplay: null,
+    dataToSearch: null,
+    columnToSearch: 'id',
     loading: false,
     showAddRowForm: false,
     newRowData: {
@@ -151,11 +153,45 @@ class App extends Component {
   }
 
   dataToSearchHandler = (event) => {
+    this.setState({
+      dataToSearch: event.target.value
+    });
+  }
 
+  columnToSearchHandler = (event) => {
+    this.setState({
+      columnToSearch: event.target.value
+    });
   }
 
   findDataHandler = () => {
-    
+    const dataToFilter = [
+      ...this.state.receivedData
+    ];
+    const columnToSearch = this.state.columnToSearch;
+    const dataToSearch = this.state.dataToSearch;
+    let filteredData = null;
+
+    if (!dataToSearch) {
+      filteredData = dataToFilter;
+    } else {
+      filteredData = dataToFilter.filter(dataItem => {
+          return !!~dataItem[columnToSearch].toString().indexOf(dataToSearch);
+      });
+    }
+
+    if (!filteredData.length) return;
+
+    const updatedSplittedData = [];
+    const chunk = 20;
+
+    for (let i = 0, j = filteredData.length; i < j; i+=chunk) {
+      updatedSplittedData.push(filteredData.slice(i, i + chunk));
+    }
+
+    this.setState({
+      splittedData: updatedSplittedData
+    });
   }
 
   render() {
@@ -184,7 +220,8 @@ class App extends Component {
         newRowData={this.state.newRowData} />;
 
       filter = <Filter
-        dataToSearch={this.dataToSearchHandler}
+        dataToSearchHandler={this.dataToSearchHandler}
+        columnToSearchHandler={this.columnToSearchHandler}
         findDataHandler={this.findDataHandler} />
     }
 
