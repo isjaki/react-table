@@ -5,6 +5,7 @@ import './App.css';
 import Table from './components/Table/Table';
 import DataLoader from './components/DataLoader/DataLoader';
 import InfoBlock from './components/InfoBlock/InfoBlock';
+import AddRow from './components/AddRow/AddRow';
 import Pagination from './components/UI/Pagination/Pagination';
 import Spinner from './components/UI/Spinner/Spinner';
 
@@ -15,7 +16,15 @@ class App extends Component {
     dataSize: 'small',
     pageToRender: 0,
     infoToDisplay: null,
-    loading: false
+    loading: false,
+    showAddRowForm: false,
+    newRowData: {
+      id: null,
+      firstName: null,
+      lastName: null,
+      email: null,
+      phone: null
+    }
   }
 
   selectDataSizeHandler = (event) => {
@@ -98,10 +107,53 @@ class App extends Component {
     });
   }
 
+  showFormHandler = () => {
+    this.setState(prevState => ({
+      showAddRowForm: !prevState.showAddRowForm
+    }));
+  }
+
+  inputChangeHandler = (event) => {
+    const inputToChange = event.target.name;
+
+    const unpdatedRowData = {
+      ...this.state.newRowData
+    }
+
+    unpdatedRowData[inputToChange] = event.target.value;
+
+    this.setState({
+      newRowData: unpdatedRowData
+    });
+  }
+
+  addRowHandler = (event) => {
+    event.preventDefault();
+
+    const updatedData = [
+      ...this.state.receivedData
+    ];
+
+    updatedData.unshift(this.state.newRowData);
+
+    const updatedSplittedData = [];
+    const chunk = 20;
+
+    for (let i = 0, j = updatedData.length; i < j; i+=chunk) {
+      updatedSplittedData.push(updatedData.slice(i, i + chunk));
+    }
+
+    this.setState({
+      receivedData: updatedData,
+      splittedData: updatedSplittedData
+    });
+  }
+
   render() {
     let table = null;
     let pagination = null;
     let infoBlock = null;
+    let addRow = null;
 
     if (this.state.splittedData && !this.state.loading) {
       table = <Table 
@@ -112,7 +164,14 @@ class App extends Component {
         currentPage={this.state.pageToRender + 1}
         numberOfPages={this.state.splittedData.length}
         toNextPageHandler={this.toNextPageHandler}
-        toPreviousPageHandler={this.toPreviousPageHandler} />
+        toPreviousPageHandler={this.toPreviousPageHandler} />;
+      
+      addRow = <AddRow
+        showFormHandler={this.showFormHandler}
+        inputChangeHandler={this.inputChangeHandler}
+        addRowHandler={this.addRowHandler}
+        showAddRowForm={this.state.showAddRowForm}
+        newRowData={this.state.newRowData} />;
     }
 
     if (this.state.infoToDisplay && !this.state.loading) {
@@ -126,6 +185,7 @@ class App extends Component {
         <DataLoader
           selectDataSizeHandler={this.selectDataSizeHandler}
           getDataHandler={this.getDataHandler} />
+        {addRow}
         {pagination}
         {table}
         {infoBlock}
