@@ -90,7 +90,7 @@ class App extends Component {
     let newPage = this.state.pageToRender + 1;
 
     if (newPage >= this.state.splittedData.length) {
-      newPage = this.state.splittedData.length - 1;
+      newPage = 0;
     }
 
     this.setState({
@@ -102,7 +102,7 @@ class App extends Component {
     let newPage = this.state.pageToRender - 1;
 
     if (newPage < 0) {
-      newPage = 0;
+      newPage = this.state.splittedData.length - 1;
     }
 
     this.setState({
