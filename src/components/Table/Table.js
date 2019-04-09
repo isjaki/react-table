@@ -4,26 +4,40 @@ import TableRows from '../TableRows/TableRows';
 import './Table.css';
 
 const table = props => {
+    let classes = 'Ascending';
+
+    if (props.sortingOrder === 'desc') {
+        classes = 'Descending';
+    }
+
+    const onMouseDown = (event) => {
+        event.preventDefault();
+    }
 
     return (
         <table className="Table">
-            <thead>
+            <thead onMouseDown={onMouseDown}>
                 <tr>
                     <th
                         onClick={props.sortColumnHandler.bind(this, 'id')}
-                    >id</th>
+                        className={classes}
+                    >Id</th>
                     <th
                         onClick={props.sortColumnHandler.bind(this, 'firstName')}
-                    >first name</th>
+                        className={classes}
+                    >First Name</th>
                     <th
                         onClick={props.sortColumnHandler.bind(this, 'lastName')}
-                    >last name</th>
+                        className={classes}
+                    >Last Name</th>
                     <th
                         onClick={props.sortColumnHandler.bind(this, 'email')}
-                    >email</th>
+                        className={classes}
+                    >Email</th>
                     <th
                         onClick={props.sortColumnHandler.bind(this, 'phone')}
-                    >phone</th>
+                        className={classes}
+                    >Phone</th>
                 </tr>
             </thead>
             <TableRows

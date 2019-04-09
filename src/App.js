@@ -197,7 +197,8 @@ class App extends Component {
     const updatedSplittedData = splitData(filteredData, 20);
 
     this.setState({
-      splittedData: updatedSplittedData
+      splittedData: updatedSplittedData,
+      pageToRender: 0
     });
   }
 
@@ -240,6 +241,7 @@ class App extends Component {
     if (this.state.splittedData && !this.state.loading) {
       table = <Table 
         data={this.state.splittedData[this.state.pageToRender]}
+        sortingOrder={this.state.sortingOrder}
         showInfoHandler={this.showInfoHandler}
         sortColumnHandler={this.sortColumnHandler} />;
 
