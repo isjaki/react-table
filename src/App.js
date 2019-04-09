@@ -161,7 +161,8 @@ class App extends Component {
     this.setState({
       receivedData: updatedData,
       splittedData: updatedSplittedData,
-      newRowData: resetRowData
+      newRowData: resetRowData,
+      dataToSort: updatedData
     });
   }
 
