@@ -15,30 +15,35 @@ const addRow = props => {
                     type='number' 
                     name="id"
                     placeholder="Id" 
+                    value={props.newRowData.id}
                     onChange={props.inputChangeHandler} 
                 />
                 <input 
                     type="text" 
                     name="firstName" 
                     placeholder="First Name"
+                    value={props.newRowData.firstName}
                     onChange={props.inputChangeHandler}
                 />
                 <input
                     type="text" 
                     name="lastName" 
                     placeholder="Last Name"
+                    value={props.newRowData.lastName}
                     onChange={props.inputChangeHandler}
                 />
                 <input 
                     type="email" 
                     name="email" 
                     placeholder="Email"
+                    value={props.newRowData.email}
                     onChange={props.inputChangeHandler}
                 />
                 <input 
                     type="text" 
                     name="phone" 
                     placeholder="Phone Number"
+                    value={props.newRowData.phone}
                     onChange={props.inputChangeHandler}
                 />
                 {

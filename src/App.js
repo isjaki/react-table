@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import splitData from './helpers/splitData';
 import './App.css';
 
 import Table from './components/Table/Table';
@@ -17,16 +18,16 @@ class App extends Component {
     dataSize: 'small',
     pageToRender: 0,
     infoToDisplay: null,
-    dataToSearch: null,
+    dataToSearch: '',
     columnToSearch: 'id',
     loading: false,
     showAddRowForm: false,
     newRowData: {
-      id: null,
-      firstName: null,
-      lastName: null,
-      email: null,
-      phone: null
+      id: '',
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: ''
     }
   }
 
@@ -61,12 +62,7 @@ class App extends Component {
 
     axios.get(dataLink).then(response => {
       const receivedData = response.data;
-      const splittedData = [];
-      const chunk = 20;
-
-      for (let i = 0, j = receivedData.length; i < j; i+=chunk) {
-        splittedData.push(receivedData.slice(i, i + chunk));
-      }
+      const splittedData = splitData(receivedData, 20);
 
       this.setState({
         receivedData: receivedData,
@@ -139,16 +135,20 @@ class App extends Component {
 
     updatedData.unshift(this.state.newRowData);
 
-    const updatedSplittedData = [];
-    const chunk = 20;
+    const updatedSplittedData = splitData(updatedData, 20);
 
-    for (let i = 0, j = updatedData.length; i < j; i+=chunk) {
-      updatedSplittedData.push(updatedData.slice(i, i + chunk));
+    const resetRowData = {
+      id: '',
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: ''
     }
 
     this.setState({
       receivedData: updatedData,
-      splittedData: updatedSplittedData
+      splittedData: updatedSplittedData,
+      newRowData: resetRowData
     });
   }
 
@@ -182,12 +182,7 @@ class App extends Component {
 
     if (!filteredData.length) return;
 
-    const updatedSplittedData = [];
-    const chunk = 20;
-
-    for (let i = 0, j = filteredData.length; i < j; i+=chunk) {
-      updatedSplittedData.push(filteredData.slice(i, i + chunk));
-    }
+    const updatedSplittedData = splitData(filteredData, 20);
 
     this.setState({
       splittedData: updatedSplittedData
